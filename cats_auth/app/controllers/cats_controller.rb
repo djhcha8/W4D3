@@ -1,4 +1,7 @@
 class CatsController < ApplicationController
+  before_action :ensure_login, only: [:new]
+  before_action :do_u_own_this_cat, only: [:edit, :update]
+
   def index
     @cats = Cat.all
     render :index
@@ -16,7 +19,8 @@ class CatsController < ApplicationController
 
   def create
     @cat = Cat.new(cat_params)
-    if @cat.save
+    @cat.user_id = current_user.id
+    if @cat.save!
       redirect_to cat_url(@cat)
     else
       flash.now[:errors] = @cat.errors.full_messages
@@ -40,6 +44,8 @@ class CatsController < ApplicationController
   end
 
   private
+
+
 
   def cat_params
     params.require(:cat).permit(:age, :birth_date, :color, :description, :name, :sex)

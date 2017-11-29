@@ -17,7 +17,7 @@ class CatRentalRequest < ApplicationRecord
 
   # N.B. Remember, Rails 5 automatically validates the presence of
   # belongs_to associations, so we can leave the validation of cat out here.
-  validates :end_date, :start_date, :status, presence: true
+  validates :end_date, :start_date, :status, :requester, presence: true
   validates :status, inclusion: STATUS_STATES
   validate :start_must_come_before_end
   validate :does_not_overlap_approved_request
@@ -25,6 +25,10 @@ class CatRentalRequest < ApplicationRecord
   belongs_to :cat
 
   after_initialize :assign_pending_status
+
+  belongs_to :requester,
+  foreign_key: :user_id,
+  class_name: :User
 
   def approve!
     raise 'not pending' unless self.status == 'PENDING'

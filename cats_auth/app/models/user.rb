@@ -17,6 +17,16 @@ class User < ApplicationRecord
   validates :session_token, uniqueness: true
   validates :password, length: {minimum: 6, allow_nil: true }
 
+  has_many :cats,
+  foreign_key: :user_id,
+  class_name: :Cat,
+  dependent: :destroy
+
+  has_many :cat_rental_requests,
+  foreign_key: :user_id,
+  class_name: :CatRentalRequest,
+  dependent: :destroy
+
   attr_reader :password
 
   def self.generate_session_token

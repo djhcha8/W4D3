@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  before_action :ensure_loggedout, only: [:new, :create]
+
   def new
     render :new
   end
@@ -13,10 +15,6 @@ class SessionsController < ApplicationController
       flash.now[:errors] = "Wrong credentials!!"
       render :new
     end
-  end
-
-  def login_user!(user)
-    session[:session_token] = user.reset_session_token!
   end
 
   def destroy

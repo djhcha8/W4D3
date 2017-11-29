@@ -11,6 +11,20 @@ class ApplicationController < ActionController::Base
     User.find_by session_token: session[:session_token]
   end
 
+  def login_user!(user)
+    session[:session_token] = user.reset_session_token!
+  end
 
+  def ensure_login
+    redirect_to cats_url unless current_user
+  end
+
+  def ensure_loggedout
+    redirect_to cats_url if current_user
+  end
+
+  def do_u_own_this_cat
+    redirect_to cats_url unless current_user.cats.include?(@cat)
+  end
 
 end

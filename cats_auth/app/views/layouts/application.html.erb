@@ -11,13 +11,15 @@
   <body>
     <h1><%= current_user.user_name if current_user %></h1>
     <p> <%= flash[:errors] %> </p>
-    <% in_or_out = current_user ? 'out' : 'in' %>
-    <% url_in_or_out = current_user ? session_url : new_session_url %>
-    <form action="<%= url_in_or_out %>" method='post' >
-      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-      <% if current_user %>
-        <input type="hidden" name="_method" value="delete">
-      <% end %>
+    <% if current_user %>
+    <form action="<%= session_url %>" method='post' >
+      <input type="hidden" name="_method" value="delete">
+    <% else %>
+    <form action="<%=new_session_url%>" method="get">
+    <% end %>
+
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <% in_or_out = current_user ? 'out' : 'in' %>
       <input type="submit" value="Log <%= in_or_out %> " >
     </form>
     <%= yield %>
